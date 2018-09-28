@@ -44,6 +44,13 @@ add_library (SHARED_CODE STATIC
     "../../Source/PluginProcessor.h"
     "../../Source/PluginEditor.cpp"
     "../../Source/PluginEditor.h"
+    "../../Source/dsplib/base/UGen.h"
+    "../../Source/dsplib/base/AudioUGen.h"
+    "../../Source/dsplib/base/ControlUGen.h"
+    "../../Source/dsplib/control/SinOscilator.cpp"
+    "../../Source/dsplib/control/SinOscilator.h"
+    "../../Source/dsplib/filter/cf/CanonicalFilter.cpp"
+    "../../Source/dsplib/filter/cf/CanonicalFilter.h"
     "../../../JUCE/modules/juce_audio_basics/audio_play_head/juce_AudioPlayHead.h"
     "../../../JUCE/modules/juce_audio_basics/buffers/juce_AudioChannelSet.cpp"
     "../../../JUCE/modules/juce_audio_basics/buffers/juce_AudioChannelSet.h"
@@ -1344,8 +1351,7 @@ add_library (SHARED_CODE STATIC
     "../../JuceLibraryCode/include_juce_gui_extra.cpp"
     "../../JuceLibraryCode/include_juce_opengl.cpp"
     "../../JuceLibraryCode/include_juce_video.cpp"
-    "../../JuceLibraryCode/JuceHeader.h"
-)
+    "../../JuceLibraryCode/JuceHeader.h")
 
 set_source_files_properties ("../../Source/PluginProcessor.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties ("../../Source/PluginEditor.h" PROPERTIES HEADER_FILE_ONLY TRUE)

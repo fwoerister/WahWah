@@ -24,10 +24,32 @@ WahWahAudioProcessor::WahWahAudioProcessor()
                        )
 #endif
 {
+    so = std::unique_ptr<SinOscilator>(new SinOscilator(10,400));
+    cf = std::unique_ptr<CanonicalFilter>(new CanonicalFilter(Mode::BANDPASS, *so));
+
+    addParameter (control_freq = new AudioParameterFloat ("control_freq", // parameter ID
+                                                  "control frequency", // parameter name
+                                                  1.f,   // minimum value
+                                                  20.f,   // maximum value
+                                                  10.f)); // default value
+
+    addParameter (amplitude = new AudioParameterFloat ("control amplitude", // parameter ID
+                                                       "amplitude", // parameter name
+                                                       1.f,   // minimum value
+                                                       499.f,   // maximum value
+                                                       50.f)); // default value
+
+    addParameter (center_freq = new AudioParameterFloat ("center_freq", // parameter ID
+                                                      "center frequency", // parameter name
+                                                      500.f,   // minimum value
+                                                      1000.f,   // maximum value
+                                                      500.f)); // default value
+
 }
 
 WahWahAudioProcessor::~WahWahAudioProcessor()
 {
+
 }
 
 //==============================================================================
@@ -95,8 +117,9 @@ void WahWahAudioProcessor::changeProgramName (int index, const String& newName)
 //==============================================================================
 void WahWahAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    // Use this method as the place to do any pre-playback
-    // initialisation that you need..
+    cf->resize_channels(getTotalNumInputChannels());
+    cf->init_states(sampleRate, samplesPerBlock);
+    so->init_states(sampleRate,samplesPerBlock);
 }
 
 void WahWahAudioProcessor::releaseResources()
@@ -135,26 +158,20 @@ void WahWahAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer&
     auto totalNumInputChannels  = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
 
-    // In case we have more outputs than inputs, this code clears any output
-    // channels that didn't contain input data, (because these aren't
-    // guaranteed to be empty - they may contain garbage).
-    // This is here to avoid people getting screaming feedback
-    // when they first compile a plugin, but obviously you don't need to keep
-    // this code if your algorithm always overwrites all the output channels.
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
 
-    // This is the place where you'd normally do the guts of your plugin's
-    // audio processing...
-    // Make sure to reset the state if your inner loop is processing
-    // the samples and the outer loop is handling the channels.
-    // Alternatively, you can process the samples with the channels
-    // interleaved by keeping the same state.
-    for (int channel = 0; channel < totalNumInputChannels; ++channel)
-    {
-        auto* channelData = buffer.getWritePointer (channel);
 
-        // ..do something to the data...
+    for(int i=0; i< buffer.getNumSamples();i++){
+        so->set_amplitude(amplitude->get());
+        so->set_frequency(control_freq->get());
+        cf->set_frequency(center_freq->get());
+
+        for(int channel = 0;channel < totalNumInputChannels;++channel){
+            auto* channelData = buffer.getWritePointer (channel);
+
+            cf->process_sample(channelData[i],channel);
+        }
     }
 }
 
@@ -166,7 +183,7 @@ bool WahWahAudioProcessor::hasEditor() const
 
 AudioProcessorEditor* WahWahAudioProcessor::createEditor()
 {
-    return new WahWahAudioProcessorEditor (*this);
+    return new GenericAudioProcessorEditor (this);
 }
 
 //==============================================================================

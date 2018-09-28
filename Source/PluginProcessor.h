@@ -11,6 +11,9 @@
 #pragma once
 
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "dsplib/filter/cf/CanonicalFilter.h"
+#include "dsplib/control/SinOscilator.h"
+
 
 //==============================================================================
 /**
@@ -58,4 +61,12 @@ public:
 private:
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (WahWahAudioProcessor)
+
+    std::unique_ptr<SinOscilator> so;
+    std::unique_ptr<CanonicalFilter> cf;
+
+    AudioParameterFloat* control_freq;
+    AudioParameterFloat* center_freq;
+    AudioParameterFloat* amplitude;
+
 };
