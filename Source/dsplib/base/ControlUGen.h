@@ -14,6 +14,11 @@ public:
     virtual void process_parameter(parameterType &param) {};
 };
 
+/***
+ * This UGen is used for controling parameters of AudioUgens.
+ * @tparam SubControlUGen
+ * @tparam parameterType
+ */
 template<typename SubControlUGen, typename parameterType>
 class ControlUGen : public UGen<SubControlUGen, parameterType>, public IController<parameterType> {
 public:

@@ -5,18 +5,14 @@
 #ifndef UGENTEST_CANONICALFILTER_H
 #define UGENTEST_CANONICALFILTER_H
 
-#include "../../base/AudioUGen.h"
-#include "../../base/ControlUGen.h"
+#include "../base/AudioUGen.h"
+#include "../base/ControlUGen.h"
 #include <math.h>
 
-class CanonicalFilter;
-
-enum Mode {
-    LOWPASS, BANDPASS, HIGHPASS
-};
+class IIR_BandPass;
 
 template<>
-struct UGenState<CanonicalFilter> : public UGenStateBase {
+struct UGenState<IIR_BandPass> : public UGenStateBase {
     void on_init() override;
 
     void reset() override;
@@ -29,19 +25,18 @@ struct UGenState<CanonicalFilter> : public UGenStateBase {
     float x_h, y_n;
 };
 
-class CanonicalFilter : public AudioUGen<CanonicalFilter, float> {
+class IIR_BandPass : public AudioUGen<IIR_BandPass, float> {
 private:
-    float Q;
-    Mode mode;
     float f_c;
+    float f_b;
 
     IController<float> &f_c_cntr;
 
 
 public:
-    CanonicalFilter(Mode mode, IController<float> &f_c_cntr);
-    CanonicalFilter(Mode mode, IController<float> &f_c_cntr, float f_c);
-    CanonicalFilter(Mode mode, IController<float> &f_c_cntr, float f_c, float Q);
+    IIR_BandPass(IController<float> &f_c_cntr);
+    IIR_BandPass(IController<float> &f_c_cntr, float f_c);
+    IIR_BandPass(IController<float> &f_c_cntr, float f_c, float f_b);
 
     void attach_f_c_controller(IController<float> &cntr);
 
@@ -51,6 +46,9 @@ public:
 
     void set_frequency(float f_c);
 
+    void set_bandwidth(float f_b);
+
+    void update_param() override;
 
 };
 

@@ -11,7 +11,7 @@
 #pragma once
 
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "dsplib/filter/cf/CanonicalFilter.h"
+#include "dsplib/filter/IIR_BandPass.h"
 #include "dsplib/control/SinOscilator.h"
 
 
@@ -63,10 +63,11 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (WahWahAudioProcessor)
 
     std::unique_ptr<SinOscilator> so;
-    std::unique_ptr<CanonicalFilter> cf;
+    std::unique_ptr<IIR_BandPass> cf;
 
     AudioParameterFloat* control_freq;
     AudioParameterFloat* center_freq;
     AudioParameterFloat* amplitude;
+    AudioParameterFloat* bandwidth;
 
 };
