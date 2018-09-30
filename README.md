@@ -18,3 +18,6 @@ The control frequency and the amplitude can be used to adjust the behaviour of t
 2) Open this project in the producer and generate the JUCE library code
 3) Compile this project with your cmake compatibel IDE, or use the linux makefile. The VST target generates the WahWah.so.
 4) Copy the WahWah.so file into your vst plugin folder, or tell your DAW, where to look for the WahWah plugin.
+
+## Demo
+A demo of this filter can be found in the `demo/` folder!
